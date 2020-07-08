@@ -1,1 +1,1 @@
-# oscod-barbershop
+# oscod
