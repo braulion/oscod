@@ -1,4 +1,4 @@
-package com.oscod.microservices.app.examenes.models.entity;
+package com.oscod.microservices.commons.examenes.models.entity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,13 +29,14 @@ public class Examen {
 
 	private String nombre;
 	
+	@Column(name = "create_at")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createAt;
+	
 	@JsonIgnoreProperties(value = {"examen"}, allowSetters = true)
 	@OneToMany(mappedBy = "examen", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Pregunta> preguntas;
 	
-	@Column(name = "create_at")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createAt;
 
 
 	public Examen() {
@@ -47,6 +48,8 @@ public class Examen {
 		this.createAt = new Date();
 	}
 
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -70,18 +73,15 @@ public class Examen {
 	public void setCreateAt(Date createAt) {
 		this.createAt = createAt;
 	}
-	
+
 	public List<Pregunta> getPreguntas() {
 		return preguntas;
 	}
 
 	public void setPreguntas(List<Pregunta> preguntas) {
-		this.preguntas.clear();
-		if (preguntas != null && !preguntas.isEmpty()) {
-			preguntas.forEach(this::addPregunta);
-		}
+		this.preguntas = preguntas;
 	}
-	
+
 	public void addPregunta(Pregunta pregunta) {
 		pregunta.setExamen(this);
 		this.preguntas.add(pregunta);
@@ -92,6 +92,22 @@ public class Examen {
 		this.preguntas.remove(pregunta);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Examen)) {
+			return false;
+		}
+
+		Examen a = (Examen) obj;
+		return this.id != null && this.id.equals(a.getId());
+	}
+
+	
+	
 	
 	
 

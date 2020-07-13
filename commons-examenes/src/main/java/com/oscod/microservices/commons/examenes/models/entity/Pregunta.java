@@ -1,4 +1,4 @@
-package com.oscod.microservices.app.examenes.models.entity;
+package com.oscod.microservices.commons.examenes.models.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

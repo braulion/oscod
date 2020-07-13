@@ -15,6 +15,7 @@ import com.oscod.microservices.app.cursos.models.entity.Curso;
 import com.oscod.microservices.app.cursos.services.CursoService;
 import com.oscod.microservices.commons.alumnos.models.entity.Alumno;
 import com.oscod.microservices.commons.controllers.CommonController;
+import com.oscod.microservices.commons.examenes.models.entity.Examen;
 
 @RestController
 public class CursoController extends CommonController<Curso, CursoService> {
@@ -61,5 +62,27 @@ public class CursoController extends CommonController<Curso, CursoService> {
 		return ResponseEntity.noContent().build();
 		
 	}
+	
+	@PutMapping("/{id}/asignar-examenes") 
+	public ResponseEntity<?> asignarExamenes(@RequestBody List<Examen> examenes, @PathVariable Long id) {
+		Optional<Curso> optionalCurso = service.findById(id);
+		if (optionalCurso.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		Curso cursoDB = optionalCurso.get();
+		examenes.forEach(examen -> cursoDB.addExamen(examen));
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(cursoDB));
+	}
 
+	
+	@PutMapping("/{id}/eliminar-examen") 
+	public ResponseEntity<?> eliminarExamen(@RequestBody Examen examen, @PathVariable Long id) {
+		Optional<Curso> optionalCurso = service.findById(id);
+		if (optionalCurso.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		Curso cursoDB = optionalCurso.get();
+		cursoDB.removeExamen(examen);
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(cursoDB));
+	}
 }
