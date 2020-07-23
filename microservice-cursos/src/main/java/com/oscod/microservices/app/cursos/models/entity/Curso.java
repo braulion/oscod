@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 import com.oscod.microservices.commons.alumnos.models.entity.Alumno;
 import com.oscod.microservices.commons.examenes.models.entity.Examen;
@@ -25,7 +26,10 @@ public class Curso {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@NotEmpty
 	private String nombre;
+	
 	@OneToMany(fetch = FetchType.LAZY)
 	private List<Alumno> alumnos;
 	

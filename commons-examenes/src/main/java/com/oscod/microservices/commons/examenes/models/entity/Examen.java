@@ -11,11 +11,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -27,6 +30,7 @@ public class Examen {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@NotEmpty
 	private String nombre;
 	
 	@Column(name = "create_at")
@@ -37,6 +41,9 @@ public class Examen {
 	@OneToMany(mappedBy = "examen", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Pregunta> preguntas;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@NotNull
+	private Asignatura asignatura;
 
 
 	public Examen() {
@@ -90,6 +97,16 @@ public class Examen {
 	public void removePregunta(Pregunta pregunta) {
 		pregunta.setExamen(null);
 		this.preguntas.remove(pregunta);
+	}
+
+	
+	
+	public Asignatura getAsignatura() {
+		return asignatura;
+	}
+
+	public void setAsignatura(Asignatura asignatura) {
+		this.asignatura = asignatura;
 	}
 
 	@Override

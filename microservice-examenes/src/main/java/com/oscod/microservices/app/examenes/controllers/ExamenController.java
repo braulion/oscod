@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,12 +20,17 @@ import com.oscod.microservices.commons.examenes.models.entity.Examen;
 import com.oscod.microservices.commons.examenes.models.entity.Pregunta;
 
 @RestController
-public class ExamenController  extends CommonController<Examen, ExamenService>{
-	
+public class ExamenController extends CommonController<Examen, ExamenService> {
+
 	@PutMapping("/{id}")
-	public ResponseEntity<?> editar(@RequestBody Examen examen, @PathVariable Long id) {
+	public ResponseEntity<?> editar(@Valid @RequestBody Examen examen, BindingResult result, @PathVariable Long id) {
+		// Se validan los datos a guardar
+		if (result.hasErrors()) {
+			return this.validar(result);
+		}
+
 		Optional<Examen> o = service.findById(id);
-		
+
 		if (!o.isPresent()) {
 			return ResponseEntity.notFound().build();
 		}
@@ -39,17 +47,19 @@ public class ExamenController  extends CommonController<Examen, ExamenService>{
 		examenToUpdate.setPreguntas(examen.getPreguntas());
 		return ResponseEntity.ok().body(service.save(examenToUpdate));
 	}
-	
+
 	@GetMapping("/filtrar/{value}")
 	public ResponseEntity<?> filtrar(@PathVariable String value) {
 		if (value == null || value.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
-		
+
 		return ResponseEntity.ok().body(service.findByNombre(value));
 	}
-	
-	
-	
+
+	@GetMapping("/asignaturas")
+	public ResponseEntity<?> listarAsignaturas() {
+		return ResponseEntity.ok().body(service.findAllAsignaturas());
+	}
 
 }
